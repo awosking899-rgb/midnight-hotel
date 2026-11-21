@@ -1,0 +1,1 @@
+{"name":"midnight-hotel","version":"0.3.0","private":true,"scripts":{"start":"node server.js","test":"node test-client.js && node test-multiplayer.js"},"engines":{"node":">=18"}}

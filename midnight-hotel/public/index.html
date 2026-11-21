@@ -1,0 +1,70 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>فندق منتصف الليل</title>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Cairo:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0c0807;--wood:#2b1a12;--blood:#5a1414;--gold:#c9a24b;--paper:#e8dcc0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--ink);color:var(--paper);font:16px Cairo,Tahoma,sans-serif;overflow:hidden;touch-action:none}
+#gl{position:fixed;inset:0;width:100%;height:100%}
+[hidden]{display:none!important}
+.screen{position:fixed;inset:0;display:flex;gap:2rem;align-items:center;justify-content:center;flex-wrap:wrap;padding:1rem;overflow:auto;background:radial-gradient(ellipse at 50% 30%,#2b1410,#0c0807 70%);z-index:5}
+h1{font:700 clamp(2.2rem,7vw,4rem)/1.1 'Aref Ruqaa',serif;color:var(--gold);margin:0 0 .3rem;text-shadow:0 0 24px #5a141488}
+.card{width:min(92vw,380px);display:grid;gap:.6rem}
+label{display:grid;gap:.2rem;font-size:.85rem;color:#b9a67b}
+input,select,button,textarea{font:inherit;background:var(--wood);color:var(--paper);border:1px solid #6b4a2a;border-radius:6px;padding:.55rem .7rem}
+input[type=color]{padding:0;height:2.2rem;width:100%}
+button{cursor:pointer;background:var(--blood);border-color:var(--gold);color:#f3e7c4}
+button:active{filter:brightness(1.3)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+#prev{width:220px;height:300px;border:1px solid #6b4a2a;border-radius:8px;background:#120a08}
+#cross{position:fixed;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:#c9a24b99;pointer-events:none}
+#prompt{position:fixed;left:50%;bottom:22%;transform:translateX(-50%);background:#000a;border:1px solid var(--gold);padding:.4rem .9rem;border-radius:6px;color:var(--gold)}
+#net{position:fixed;top:8px;right:10px;font-size:.8rem;color:#b9a67b;pointer-events:none}
+#toast{position:fixed;top:14%;left:50%;transform:translateX(-50%);max-width:min(90vw,520px);background:#000c;border:1px solid var(--gold);padding:.7rem 1rem;border-radius:6px;opacity:0;transition:opacity .4s;pointer-events:none;text-align:center;z-index:4}
+.hb{position:fixed;top:8px;left:10px;display:flex;gap:.4rem;z-index:3}
+.hb button{padding:.35rem .7rem}
+#joy{position:fixed;left:24px;bottom:28px;width:120px;height:120px;border-radius:50%;border:2px solid #c9a24b66;background:#0006;display:none}
+#knob{position:absolute;left:40px;top:40px;width:40px;height:40px;border-radius:50%;background:#c9a24bcc}
+#look{position:fixed;right:0;top:0;width:60%;height:100%;display:none}
+#btnE{position:fixed;right:26px;bottom:40px;width:78px;height:78px;border-radius:50%;display:none;z-index:3}
+.touch #joy,.touch #look,.touch #btnE{display:block}
+#panel{position:fixed;inset:0;background:#0c0807ee;z-index:6;overflow:auto;padding:1rem;display:grid;gap:1rem;align-content:start}
+#panel section{border:1px solid #6b4a2a;border-radius:8px;padding:.7rem;max-width:720px;width:100%;margin:auto}
+#panel h3{margin:0 0 .4rem;color:var(--gold);font-family:'Aref Ruqaa',serif;font-size:1.3rem}
+#panel p{margin:.3rem 0}.clue{border-bottom:1px solid #3a2a1c;padding:.3rem 0}
+textarea{width:100%;min-height:80px}#chatlog{height:110px;overflow:auto;font-size:.9rem;margin-bottom:.4rem}
+#end{position:fixed;inset:0;background:#000d;z-index:7;display:flex;flex-direction:column;gap:1rem;align-items:center;justify-content:center;text-align:center;padding:2rem}
+</style></head><body>
+<canvas id="gl"></canvas>
+<div id="menu" class="screen">
+ <div class="card"><h1>فندق منتصف الليل</h1><p style="margin:0;color:#b9a67b">استيقظتما في مكان لا تتذكران كيف وصلتما إليه.</p>
+  <label>الاسم داخل اللعبة<input id="name" maxlength="14" value="نزيل"></label>
+  <div class="row"><label>البشرة<input type="color" id="skin" value="#c68642"></label><label>الملابس<input type="color" id="shirt" value="#7a1f1f"></label></div>
+  <div class="row"><label>البنطال<input type="color" id="pants" value="#2a2a33"></label><label>لون الشعر<input type="color" id="hair" value="#1b1210"></label></div>
+  <div class="row"><label>الشعر<select id="hstyle"><option value="short">قصير</option><option value="long">طويل</option><option value="bald">بدون</option></select></label>
+  <label>الجنس<select id="gender"><option value="m">ذكر</option><option value="f">أنثى</option></select></label><label>الوجه<select id="face"><option value="round">دائري</option><option value="long">طويل</option><option value="wide">عريض</option></select></label></div><div class="row"><label>لون العينين<input type="color" id="eyes" value="#3b2a1a"></label><label>إكسسوار<select id="acc"><option value="none">بدون</option><option value="hat">قبعة</option><option value="glasses">نظارة</option></select></label></div>
+  <button id="create">إنشاء غرفة</button>
+  <div class="row"><input id="code" placeholder="كود الغرفة" maxlength="5" style="text-transform:uppercase"><button id="join">انضمام</button></div>
+ </div>
+ <canvas id="prev" width="440" height="600"></canvas>
+</div>
+<div id="hud" hidden>
+ <div id="cross"></div><div id="prompt" hidden></div><div id="net"></div><div id="toast"></div>
+ <div class="hb"><button id="bag">الحقيبة والأدلة</button></div>
+ <div id="joy"><div id="knob"></div></div><div id="look"></div><button id="btnE">تفاعل</button>
+</div>
+<div id="panel" hidden>
+ <section><h3>الحقيبة</h3><div id="inv"></div></section>
+ <section><h3>أدلتي (خاصة)</h3><div id="clues"></div></section>
+ <section><h3>أدلة مشتركة</h3><div id="shared"></div></section>
+ <section><h3>الإعدادات</h3><label>مستوى الصوت<input type="range" id="vol" min="0" max="1" step=".05"></label><label>حساسية النظر<input type="range" id="sens" min=".3" max="2.5" step=".1"></label></section>
+ <section><h3>سجل الأحداث</h3><div id="evlog"></div></section>
+ <section><h3>ملاحظاتي</h3><textarea id="notes"></textarea></section>
+ <section><h3>المحادثة</h3><div id="chatlog"></div><div class="row" style="grid-template-columns:1fr auto"><input id="chatin" maxlength="200"><button id="chatsend">إرسال</button></div></section>
+ <section><button id="resume" style="width:100%">العودة إلى اللعبة</button></section>
+</div>
+<div id="end" hidden><h1 id="endt"></h1><p id="endp" style="max-width:480px"></p><button onclick="location.reload()">القائمة الرئيسية</button></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="ui.js"></script><script src="content.js"></script><script src="tower.js"></script><script src="game.js"></script>
+</body></html>

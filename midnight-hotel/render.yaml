@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: midnight-hotel
+    runtime: node
+    plan: starter            # persistent disks need a paid plan
+    buildCommand: "echo no build"
+    startCommand: node server.js
+    healthCheckPath: /healthz
+    envVars:
+      - {key: DB_FILE, value: /var/data/rooms.json}
+    disk: {name: hotel-data, mountPath: /var/data, sizeGB: 1}
